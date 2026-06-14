@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sdeng TV – Finale CSI</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Barlow Condensed', sans-serif;
+    background: #2e3447;
+  }
+
+  .poster {
+    width: 1080px;
+    height: 1080px;
+    position: relative;
+    background: #1a1e2e;
+    overflow: hidden;
+  }
+
+  /* Court floor texture */
+  .court-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 480px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(180, 100, 30, 0.08) 40%,
+      rgba(160, 80, 20, 0.18) 100%
+    );
+  }
+
+  .court-lines {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 480px;
+    overflow: hidden;
+  }
+
+  .court-lines::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .court-lines::after {
+    content: '';
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.06);
+  }
+
+  /* Dark gradient overlay top */
+  .overlay-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 420px;
+    background: linear-gradient(180deg, #0d0f18 0%, rgba(13,15,24,0.4) 100%);
+    z-index: 1;
+  }
+
+  /* Glow accent */
+  .glow-orange {
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(230, 80, 20, 0.25) 0%, transparent 70%);
+    z-index: 0;
+  }
+
+  .glow-blue {
+    position: absolute;
+    bottom: 100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(60, 80, 160, 0.15) 0%, transparent 70%);
+    z-index: 0;
+  }
+
+  /* Logo area */
+  .logo-area {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* SVG Logo Sdeng TV */
+  .logo-svg {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 10px;
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: #fff;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(230,80,20,0.5);
+  }
+
+  .logo-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* LIVE badge */
+  .live-badge {
+    position: absolute;
+    top: 48px;
+    right: 48px;
+    z-index: 20;
+    background: #e54012;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    padding: 6px 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 20px rgba(229,64,18,0.6);
+  }
+
+  .live-dot {
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* Main title block */
+  .title-block {
+    position: absolute;
+    top: 200px;
+    left: 0; right: 0;
+    z-index: 10;
+    text-align: center;
+  }
+
+  .event-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    color: #e54012;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 130px;
+    line-height: 0.88;
+    color: #fff;
+    text-shadow: 0 4px 40px rgba(0,0,0,0.8);
+    letter-spacing: 4px;
+  }
+
+  .main-title span {
+    color: #e54012;
+  }
+
+  .subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  /* Date + time pill */
+  .datetime-row {
+    position: absolute;
+    top: 520px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .datetime-pill {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .dt-block {
+    padding: 14px 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dt-block + .dt-block {
+    border-left: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .dt-label {
+    font-size: 11px;
+    color: #e54012;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .dt-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: #fff;
+    letter-spacing: 2px;
+  }
+
+  /* Venue */
+  .venue-block {
+    position: absolute;
+    top: 630px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+  }
+
+  .venue-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: 3px;
+  }
+
+  .venue-address {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* Menu cards */
+  .menu-row {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 20px;
+    width: 900px;
+  }
+
+  .menu-card {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px 28px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+  }
+
+  .menu-card.featured {
+    border-color: rgba(229, 64, 18, 0.5);
+    background: rgba(229, 64, 18, 0.08);
+  }
+
+  .menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+
+  .menu-card.featured::before {
+    background: linear-gradient(90deg, transparent, #e54012, transparent);
+  }
+
+  .menu-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: #e54012;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .menu-items {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+  }
+
+  .menu-items strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .menu-note {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 10px;
+    font-family: 'Barlow', sans-serif;
+    font-style: italic;
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 70px;
+    background: rgba(229, 64, 18, 0.9);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .bottom-bar-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: 4px;
+  }
+
+  .bottom-bar-sep {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+  }
+
+  /* Decorative diagonal stripe */
+  .stripe {
+    position: absolute;
+    top: 160px;
+    left: -60px;
+    width: 1300px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(229,64,18,0.3), transparent);
+    transform: rotate(-2deg);
+    z-index: 2;
+  }
+
+  /* Basketball silhouette */
+  .ball-bg {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    width: 560px;
+    height: 560px;
+    opacity: 0.04;
+  }
+
+  .ball-bg circle {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 18;
+  }
+
+  .ball-bg path {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 18;
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- Background elements -->
+  <div class="glow-orange"></div>
+  <div class="glow-blue"></div>
+  <div class="overlay-top"></div>
+  <div class="court-floor"></div>
+  <div class="court-lines"></div>
+  <div class="stripe"></div>
+
+  <!-- Basketball outline background -->
+  <svg class="ball-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="90"/>
+    <path d="M10,100 Q55,60 100,10"/>
+    <path d="M10,100 Q55,140 100,190"/>
+    <path d="M190,100 Q145,60 100,10"/>
+    <path d="M190,100 Q145,140 100,190"/>
+    <path d="M10,100 Q100,130 190,100"/>
+    <path d="M10,100 Q100,70 190,100"/>
+  </svg>
+
+  <!-- LIVE badge -->
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    LIVE
+  </div>
+
+  <!-- Logo -->
+  <div class="logo-area">
+    <!-- Sdeng TV logo recreated in SVG -->
+    <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Basketball play button shape -->
+      <defs>
+        <radialGradient id="bg" cx="40%" cy="35%">
+          <stop offset="0%" stop-color="#ff7a2f"/>
+          <stop offset="100%" stop-color="#c8200a"/>
+        </radialGradient>
+      </defs>
+      <!-- Play triangle with rounded corners -->
+      <path d="M20,12 L80,50 L20,88 Z" fill="url(#bg)" rx="6"/>
+      <!-- Basketball lines -->
+      <line x1="20" y1="12" x2="80" y2="50" stroke="#2e3447" stroke-width="7" stroke-linecap="round"/>
+      <line x1="20" y1="88" x2="80" y2="50" stroke="#2e3447" stroke-width="7" stroke-linecap="round"/>
+      <line x1="20" y1="12" x2="20" y2="88" stroke="#2e3447" stroke-width="7" stroke-linecap="round"/>
+      <path d="M20,50 Q50,35 80,50" fill="none" stroke="#2e3447" stroke-width="5" stroke-linecap="round"/>
+      <path d="M20,50 Q50,65 80,50" fill="none" stroke="#2e3447" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <div class="logo-text">SDENG TV</div>
+    <div class="logo-tagline">Il ferro è servito</div>
+  </div>
+
+  <!-- Main title -->
+  <div class="title-block">
+    <div class="event-label">📍 Domani ci siamo</div>
+    <div class="main-title">FINALE<br><span>CSI</span></div>
+    <div class="subtitle">Basket Femminile</div>
+  </div>
+
+  <!-- Date + Time -->
+  <div class="datetime-row">
+    <div class="datetime-pill">
+      <div class="dt-block">
+        <div class="dt-label">Data</div>
+        <div class="dt-value">28.05.2026</div>
+      </div>
+      <div class="dt-block">
+        <div class="dt-label">Palla a due</div>
+        <div class="dt-value">21:00</div>
+      </div>
+      <div class="dt-block">
+        <div class="dt-label">Dove</div>
+        <div class="dt-value">PalaRambaldi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Venue -->
+  <div class="venue-block">
+    <div class="venue-name">🍕 Bar del Palazzetto</div>
+    <div class="venue-address">Via Cesare Battisti 63 — Vieni a mangiare con noi prima o dopo la partita!</div>
+  </div>
+
+  <!-- Menu cards -->
+  <div class="menu-row">
+    <div class="menu-card featured">
+      <div class="menu-price">15€</div>
+      <div class="menu-items">
+        <strong>Cocktail Basket Kiss</strong><br>
+        + 3 pezzi di Pinsa<br>
+        + Caffè
+      </div>
+      <div class="menu-note">*Rum, sour, fragola e soda</div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-price">12€</div>
+      <div class="menu-items">
+        <strong>Bevanda</strong><br>
+        + 3 pezzi di Pinsa
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-text">SDENG TV</div>
+    <div class="bottom-bar-sep"></div>
+    <div class="bottom-bar-text">YOUTUBE</div>
+    <div class="bottom-bar-sep"></div>
+    <div class="bottom-bar-text">IL FERRO È SERVITO</div>
+  </div>
+
+</div>
+</body>
+</html>
