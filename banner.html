@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sdeng TV — Banner</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: transparent;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .banner {
+    width: 100%;
+    background: rgba(10, 10, 10, 0.92);
+    border-top: 2px solid #e84e1b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 20px;
+    gap: 0;
+    height: 64px;
+  }
+
+  .team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  .team.away { flex-direction: row-reverse; }
+
+  .team-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    color: #f0f0f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+  }
+
+  .score-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    flex-shrink: 0;
+  }
+
+  .score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    color: #ffffff;
+    min-width: 2ch;
+    text-align: center;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .score.bump { color: #e84e1b; }
+
+  .sep {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: #444;
+    line-height: 1;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: #e84e1b;
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: #e84e1b;
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="team home">
+    <div class="live-dot"></div>
+    <div class="team-name" id="homeName">CASA</div>
+  </div>
+  <div class="score-block">
+    <div class="score" id="homeScore">0</div>
+    <div class="sep">—</div>
+    <div class="score" id="awayScore">0</div>
+  </div>
+  <div class="team away">
+    <div class="live-dot"></div>
+    <div class="team-name" id="awayName">OSPITI</div>
+  </div>
+  <div class="logo">SDENG TV BOLOGNA</div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    databaseURL: "https://sdeng-scoreboard-default-rtdb.europe-west1.firebasedatabase.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const homeScoreEl = document.getElementById('homeScore');
+  const awayScoreEl = document.getElementById('awayScore');
+  const homeNameEl = document.getElementById('homeName');
+  const awayNameEl = document.getElementById('awayName');
+
+  let prevHome = 0, prevAway = 0;
+
+  onValue(ref(db, 'match'), (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    homeNameEl.textContent = (data.homeName || 'CASA').toUpperCase();
+    awayNameEl.textContent = (data.awayName || 'OSPITI').toUpperCase();
+
+    const h = data.homeScore ?? 0;
+    const a = data.awayScore ?? 0;
+
+    homeScoreEl.textContent = h;
+    awayScoreEl.textContent = a;
+
+    if (h !== prevHome) bump(homeScoreEl);
+    if (a !== prevAway) bump(awayScoreEl);
+
+    prevHome = h;
+    prevAway = a;
+  });
+
+  function bump(el) {
+    el.classList.remove('bump');
+    void el.offsetWidth;
+    el.classList.add('bump');
+    setTimeout(() => el.classList.remove('bump'), 600);
+  }
+</script>
+</body>
+</html>
